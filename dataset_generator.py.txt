@@ -1,0 +1,31 @@
+import numpy as np
+import pandas as pd
+
+np.random.seed(42)
+n_samples = 1000
+
+data = {
+    "size_cm": np.random.uniform(0.1, 100, n_samples),
+    "velocity_kms": np.random.uniform(1, 15, n_samples),
+    "altitude_km": np.random.uniform(200, 36000, n_samples),
+    "distance_to_sat_km": np.random.uniform(0.1, 50, n_samples),
+    "material_density": np.random.uniform(1, 8, n_samples),
+    "collision_probability": np.random.uniform(0, 1, n_samples),
+    "orbit_type": np.random.choice(["LEO", "MEO", "GEO"], n_samples)
+}
+
+df = pd.DataFrame(data)
+
+def classify_risk(row):
+    if row["velocity_kms"] > 10 and row["distance_to_sat_km"] < 5:
+        return "High"
+    elif row["collision_probability"] > 0.5:
+        return "Medium"
+    else:
+        return "Low"
+
+df["Risk_Level"] = df.apply(classify_risk, axis=1)
+
+df.to_csv("space_debris_dataset.csv", index=False)
+
+print("Dataset Generated Successfully!")
